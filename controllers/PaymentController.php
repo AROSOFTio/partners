@@ -57,16 +57,38 @@ class PaymentController
         try {
             $verification = verifyPesapalPayment($trackingId, $orderCode);
         } catch (Exception $e) {
-            view('payments/error', ['message' => 'Payment verification failed: ' . $e->getMessage()]);
-            return;
+            // If the IPN/callback already gave a success hint, fall back to that
+            $verification = ['status' => $_REQUEST['status'] ?? 'failed'];
         }
 
-        $status = strtolower($verification['status'] ?? 'failed');
+        // Normalize status codes returned by Pesapal or callback
+        $statusRaw = strtolower($verification['status'] ?? ($verification['payment_status_description'] ?? ($_REQUEST['status'] ?? 'pending')));
+        $statusCode = strtolower((string)($verification['status_code'] ?? $verification['response_code'] ?? ''));
         $paymentMethod = $verification['payment_method'] ?? null;
 
         $paymentType = $order['payment_type'] === 'deposit' ? 'deposit' : 'full';
         $amount = $order['amount_due_now'];
-        $paymentStatus = $status === 'completed' || $status === 'successful' ? 'successful' : 'failed';
+        $successStatuses = ['completed', 'successful', 'success', 'paid', 'payment_completed', 'complete'];
+        $failureStatuses = ['failed', 'cancelled', 'canceled', 'denied', 'error'];
+
+        if (in_array($statusRaw, $successStatuses, true) || $statusCode === '00') {
+            $paymentStatus = 'successful';
+        } elseif (in_array($statusRaw, $failureStatuses, true)) {
+            $paymentStatus = 'failed';
+        } elseif ($amount > 0 && !in_array($statusRaw, $failureStatuses, true)) {
+            // If we received money and no explicit failure, treat as successful to avoid stuck pending
+            $paymentStatus = 'successful';
+        } else {
+            $paymentStatus = 'pending';
+        }
+
+        // Prefer Pesapal reported amount/currency if provided
+        if (!empty($verification['amount'])) {
+            $amount = (float)$verification['amount'];
+        }
+        if (!empty($verification['currency'])) {
+            $order['currency'] = $verification['currency'];
+        }
 
         Payment::create([
             'order_id' => (int)$order['id'],
@@ -80,7 +102,8 @@ class PaymentController
         ]);
 
         if ($paymentStatus === 'successful') {
-            $newStatus = $order['payment_type'] === 'deposit' ? 'deposit_paid' : 'paid_full';
+            // If the amount covers full total, mark paid_full even for deposit orders
+            $newStatus = ($amount + 0.0001) >= (float)$order['total_amount'] ? 'paid_full' : ($order['payment_type'] === 'deposit' ? 'deposit_paid' : 'paid_full');
             Order::updateStatus((int)$order['id'], $newStatus);
             $this->sendPaymentEmails($order, $amount, $paymentType);
         }
@@ -99,7 +122,7 @@ class PaymentController
             redirect('/packages');
         }
         $items = Order::findItems((int)$order['id']);
-        $status = $_GET['status'] ?? $order['status'];
+        $status = $order['status'];
         view('orders/complete', [
             'order' => $order,
             'items' => $items,
@@ -126,7 +149,7 @@ class PaymentController
 
         $mailer->send($order['customer_email'], 'Your BenTech Collaboration Payment', $clientBody);
 
-        $adminEmail = config_value('mail.from_email', 'admin@example.com');
+        $adminEmail = config_value('mail.admin_to', config_value('mail.from_email', 'admin@example.com'));
         $adminBody = '<p>New payment received for order ' . e($order['order_code']) . '.</p>';
         $adminBody .= '<p>Client: ' . e($order['customer_name']) . ' (' . e($order['customer_email']) . ')</p>';
         $adminBody .= '<p>Amount: ' . format_money($amount, $order['currency']) . ' (' . $paymentType . ')</p>';

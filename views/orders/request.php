@@ -16,7 +16,7 @@ foreach ($selectedPackages as $pkg) {
         <div>
             <p class="badge mb-3">Request collaboration</p>
             <h1 class="text-3xl font-bold text-[#152228]">Tell us about your campaign</h1>
-            <p class="text-slate-600">Select packages on the right, then share your brief. We will confirm timelines right away.</p>
+            <p class="text-slate-600">Select packages on the right, add a custom request if needed, then share your brief.</p>
         </div>
 
         <?php if (!empty($errors)): ?>
@@ -69,6 +69,34 @@ foreach ($selectedPackages as $pkg) {
                         <span>50% deposit (if eligible)</span>
                     </label>
                 </div>
+            </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-xl card-shadow p-4 space-y-4">
+            <h2 class="font-semibold text-[#152228]">Add a custom package (optional)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-[#152228]">Title</label>
+                    <input type="text" name="custom_name" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="Custom collab (e.g. Live stream feature)">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-[#152228]">Price (<?= e(get_display_currency()) ?>)</label>
+                    <input type="number" step="0.01" name="custom_price" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="e.g. 150.00">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-[#152228]">Delivery time</label>
+                    <input type="text" name="custom_delivery_time" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="e.g. 5-7 business days">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-[#152228]">Duration (mins)</label>
+                    <input type="number" name="custom_duration" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="e.g. 6">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-[#152228]">Description</label>
+                <textarea name="custom_description" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="Describe the custom collaboration"></textarea>
             </div>
         </div>
 

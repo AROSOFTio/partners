@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Package.php';
+require_once __DIR__ . '/../models/Category.php';
 require_once __DIR__ . '/../models/Order.php';
 require_once __DIR__ . '/../models/OrderItem.php';
 require_once __DIR__ . '/../lib/helpers.php';
@@ -15,6 +16,40 @@ class OrderController
             $selectedIds = [$selectedIds];
         }
         $selectedIds = array_filter(array_map('intval', $selectedIds));
+
+        // Handle custom package creation
+        if (is_post()) {
+            $customName = Validator::sanitize($_POST['custom_name'] ?? '');
+            $customPrice = (float)($_POST['custom_price'] ?? 0);
+            $customDescription = Validator::sanitize($_POST['custom_description'] ?? '');
+            $customDelivery = Validator::sanitize($_POST['custom_delivery_time'] ?? '');
+            $customDuration = (int)($_POST['custom_duration'] ?? 0);
+            if ($customName && $customPrice > 0) {
+                $categoryId = !empty($allPackages) ? (int)$allPackages[0]['category_id'] : 1;
+                $slug = $this->slugify($customName . '-' . uniqid());
+                $displayCurrency = get_display_currency();
+                $baseCurrency = config_value('currency.base', 'UGX');
+                $customBasePrice = convert_amount($customPrice, $displayCurrency, $baseCurrency);
+                $packageId = Package::create([
+                    'category_id' => $categoryId,
+                    'name' => $customName,
+                    'slug' => $slug,
+                    'short_description' => $customDescription ?: 'Custom collaboration package.',
+                    'full_description' => $customDescription ?: 'Custom collaboration package tailored to your needs.',
+                    'base_price' => $customBasePrice,
+                    'currency' => $baseCurrency,
+                    'duration_minutes' => $customDuration ?: 5,
+                    'allow_deposit' => 0,
+                    'deposit_percentage' => 0,
+                    'delivery_time_text' => $customDelivery ?: 'As agreed',
+                    'is_active' => 0, // hide from public list, tied to this order
+                ]);
+                $selectedIds[] = $packageId;
+                // Refresh packages list to include the custom one (inactive but selected)
+                $allPackages = Package::all(); // include inactive
+            }
+        }
+
         $selectedPackages = Package::findByIds($selectedIds);
         $errors = [];
 
@@ -106,5 +141,12 @@ class OrderController
             'order' => $order,
             'items' => $items,
         ]);
+    }
+
+    private function slugify(string $text): string
+    {
+        $text = strtolower(trim($text));
+        $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+        return trim($text, '-');
     }
 }
