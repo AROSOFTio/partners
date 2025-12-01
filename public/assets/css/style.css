@@ -1,0 +1,26 @@
+body {
+    background: linear-gradient(180deg, #f8fbff 0%, #f2f7f5 100%);
+}
+.hero-banner {
+    background: radial-gradient(circle at 10% 20%, rgba(5,192,105,0.15), transparent 30%),
+                radial-gradient(circle at 80% 0%, rgba(21,34,40,0.25), transparent 35%),
+                #152228;
+}
+.card-shadow {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(5,192,105,0.1);
+    color: #05C069;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+button:focus, a:focus, input:focus, textarea:focus, select:focus {
+    outline: 2px solid #05C069;
+    outline-offset: 2px;
+}
