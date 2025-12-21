@@ -18,24 +18,23 @@ return [
         'password' => 'password',
         'from_email' => 'noreply@bentechs.com',
         'from_name' => 'BenTech Collaborations',
-        'admin_to' => 'admin@example.com',
+        'admin_to' => 'bangella23@gmail.com',
         'encryption' => 'tls',
     ],
     'pesapal' => [
-        'consumer_key' => 'PESAPAL_CONSUMER_KEY',
-        'consumer_secret' => 'PESAPAL_CONSUMER_SECRET',
+        'consumer_key' => 'tHcfGgFoSjsYA9oHK3i/GF8T1fJz9QU0',
+        'consumer_secret' => 'bAcwvIiIUKQdRTwPr3SbdkQHzAY=',
         'callback_url' => 'https://partners.bentechs.com/payment/callback',
-        'ipn_url' => 'https://partners.bentechs.com/payment/callback', // or a dedicated IPN endpoint
+        'ipn_url' => 'https://partners.ug/api/pesapal_ipn.php',
         'description' => 'BenTech Collaboration Payment',
-        'demo' => true,
+        'demo' => false,
         'api_base' => 'https://pay.pesapal.com/v3/api',
-        // Optional: set if you already registered an IPN URL in Pesapal backoffice
+        // Optional: pre-created IPN id; if empty we will attempt to register automatically.
         'ipn_id' => '',
     ],
     'currency' => [
         'base' => 'UGX',
         'default_display' => 'USD',
-        // Simple static rates relative to the base currency. Update with live rates in production.
         'rates' => [
             'UGX' => 1,
             'USD' => 0.00027,
