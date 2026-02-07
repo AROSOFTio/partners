@@ -50,7 +50,7 @@ class OrderController
             }
         }
 
-        $selectedPackages = Package::findByIds($selectedIds);
+        $selectedPackages = Package::findByIds($selectedIds, true);
         $errors = [];
 
         if (is_post()) {

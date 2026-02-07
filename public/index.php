@@ -53,6 +53,10 @@ $router->add('POST', '/payment/create', [new PaymentController(), 'create']);
 $router->add('GET', '/payment/create', [new PaymentController(), 'create']);
 $router->add('GET', '/payment/callback', [new PaymentController(), 'callback']);
 $router->add('GET', '/payment/complete', [new PaymentController(), 'complete']);
+$router->add('GET', '/payments/error', function () {
+    $message = $_GET['message'] ?? null;
+    view('payments/error', ['message' => $message]);
+});
 
 $router->add('GET', '/portfolio', [new PortfolioController(), 'index']);
 

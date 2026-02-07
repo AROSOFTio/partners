@@ -44,9 +44,10 @@
 
     <footer class="bg-[#152228] text-white mt-12">
         <div class="max-w-6xl mx-auto px-4 py-6 text-sm flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <div> @ <?= date('Y') ?> BenTech ï¿½ Powered & billed by AROSOFT Innovations Ltd. All rights reserved.</div>
+            <div> @ <?= date('Y') ?> BenTech © Powered & billed by AROSOFT Innovations Ltd. All rights reserved.</div>
             <div class="text-emerald-300">Payments are securely processed via Pesapal.</div>
         </div>
     </footer>
 </body>
 </html>
+

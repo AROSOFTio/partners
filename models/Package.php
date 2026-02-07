@@ -35,7 +35,7 @@ class Package
         return $pkg ?: null;
     }
 
-    public static function findByIds(array $ids): array
+    public static function findByIds(array $ids, bool $includeInactive = false): array
     {
         $ids = array_filter(array_map('intval', $ids));
         if (empty($ids)) {
@@ -43,7 +43,11 @@ class Package
         }
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $pdo = getPDO();
-        $stmt = $pdo->prepare("SELECT * FROM packages WHERE id IN ($placeholders) AND is_active = 1");
+        $sql = "SELECT * FROM packages WHERE id IN ($placeholders)";
+        if (!$includeInactive) {
+            $sql .= " AND is_active = 1";
+        }
+        $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
         return $stmt->fetchAll();
     }

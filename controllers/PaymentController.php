@@ -57,8 +57,8 @@ class PaymentController
         try {
             $verification = verifyPesapalPayment($trackingId, $orderCode);
         } catch (Exception $e) {
-            // If the IPN/callback already gave a success hint, fall back to that
-            $verification = ['status' => $_REQUEST['status'] ?? 'failed'];
+            // If verification fails, fall back to whatever status the callback provided.
+            $verification = ['status' => $_REQUEST['status'] ?? 'pending'];
         }
 
         // Normalize status codes returned by Pesapal or callback
@@ -75,9 +75,6 @@ class PaymentController
             $paymentStatus = 'successful';
         } elseif (in_array($statusRaw, $failureStatuses, true)) {
             $paymentStatus = 'failed';
-        } elseif ($amount > 0 && !in_array($statusRaw, $failureStatuses, true)) {
-            // If we received money and no explicit failure, treat as successful to avoid stuck pending
-            $paymentStatus = 'successful';
         } else {
             $paymentStatus = 'pending';
         }
