@@ -30,7 +30,7 @@
         <h2 class="text-2xl font-bold text-[#152228]">Collaboration Packages</h2>
         <p class="text-sm text-slate-600">Select one or more packages and submit your request.</p>
     </div>
-    <form action="/request" method="get" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form action="/request/" method="get" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <?php foreach ($packages as $pkg): ?>
             <label class="block bg-white rounded-xl p-6 border border-slate-200 card-shadow cursor-pointer hover:-translate-y-1 transition transform">
                 <div class="flex items-start gap-3">

@@ -8,7 +8,7 @@
         <a href="/request" class="px-5 py-3 bg-[#05C069] text-[#152228] font-semibold rounded-full">Request Collaboration</a>
     </div>
 
-    <form action="/request" method="get" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form action="/request/" method="get" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <?php foreach ($packages as $pkg): ?>
             <label class="block bg-white rounded-xl p-6 border border-slate-200 card-shadow cursor-pointer hover:-translate-y-1 transition transform">
                 <div class="flex items-start gap-3">

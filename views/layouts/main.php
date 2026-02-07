@@ -18,9 +18,9 @@
             <div class="flex items-center gap-4 flex-wrap md:justify-end">
                 <nav class="space-x-4 text-sm md:text-base">
                     <a href="/" class="hover:text-emerald-300">Home</a>
-                    <a href="/packages" class="hover:text-emerald-300">Packages</a>
-                    <a href="/portfolio" class="hover:text-emerald-300">Portfolio</a>
-                    <a href="/request" class="bg-[#05C069] text-[#152228] font-semibold px-4 py-2 rounded-full hover:opacity-90">Request Collab</a>
+                    <a href="/packages/" class="hover:text-emerald-300">Packages</a>
+                    <a href="/portfolio/" class="hover:text-emerald-300">Portfolio</a>
+                    <a href="/request/" class="bg-[#05C069] text-[#152228] font-semibold px-4 py-2 rounded-full hover:opacity-90">Request Collab</a>
                 </nav>
                 <?php
                 $currencyRates = config_value('currency.rates', []);
@@ -50,4 +50,5 @@
     </footer>
 </body>
 </html>
+
 

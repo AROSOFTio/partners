@@ -26,7 +26,7 @@
                 <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm"><?= e($error) ?></div>
             <?php endif; ?>
 
-            <form action="/admin/portfolio" method="post" class="bg-white border border-slate-200 rounded-xl card-shadow p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form action="/admin/portfolio/" method="post" class="bg-white border border-slate-200 rounded-xl card-shadow p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <?= csrf_field() ?>
                 <div class="md:col-span-2">
                     <h2 class="font-semibold text-[#152228] mb-2">Add / Update item</h2>
@@ -85,7 +85,7 @@
                             <td class="py-2"><?= e($item['collab_type']) ?></td>
                             <td class="py-2"><?= $item['is_featured'] ? 'Yes' : 'No' ?></td>
                             <td class="py-2 text-right">
-                                <form action="/admin/portfolio" method="post" class="inline-block">
+                                <form action="/admin/portfolio/" method="post" class="inline-block">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="delete_id" value="<?= e($item['id']) ?>">
                                     <button type="submit" class="text-red-600" onclick="return confirm('Delete this item?')">Delete</button>

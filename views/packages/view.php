@@ -20,7 +20,7 @@
                 <span class="badge" style="background: rgba(21,34,40,0.1); color: #152228;">Full payment</span>
             <?php endif; ?>
         </div>
-        <form action="/request" method="get" class="flex items-center gap-4 mt-6">
+        <form action="/request/" method="get" class="flex items-center gap-4 mt-6">
             <input type="hidden" name="packages[]" value="<?= e($package['id']) ?>">
             <button type="submit" class="px-6 py-3 bg-[#05C069] text-[#152228] font-semibold rounded-full hover:opacity-90">Request Collaboration</button>
             <a href="/packages" class="text-[#152228] font-semibold">Back to packages</a>

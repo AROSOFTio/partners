@@ -28,7 +28,7 @@
                 <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm"><?= e($error) ?></div>
             <?php endif; ?>
 
-            <form action="/admin/packages/edit<?= $isEditing ? '?id=' . e($package['id']) : '' ?>" method="post" class="bg-white border border-slate-200 rounded-xl card-shadow p-6 space-y-4">
+            <form action="/admin/packages/edit/<?= $isEditing ? '?id=' . e($package['id']) : '' ?>" method="post" class="bg-white border border-slate-200 rounded-xl card-shadow p-6 space-y-4">
                 <?= csrf_field() ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>

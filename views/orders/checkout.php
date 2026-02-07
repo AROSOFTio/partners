@@ -40,7 +40,7 @@
             Payments are securely processed by AROSOFT Innovations Ltd via Pesapal.
         </div>
 
-        <form action="/payment/create" method="post" class="flex justify-end">
+        <form action="/payment/create/" method="post" class="flex justify-end">
             <?= csrf_field() ?>
             <input type="hidden" name="order_code" value="<?= e($order['order_code']) ?>">
             <button type="submit" class="px-6 py-3 bg-[#05C069] text-[#152228] font-semibold rounded-full hover:opacity-90">Pay with Pesapal</button>
