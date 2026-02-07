@@ -38,6 +38,10 @@ $router->add('GET', '/checkout', [new OrderController(), 'checkout']);
 $router->add('POST', '/payment/create', [new PaymentController(), 'create']);
 $router->add('GET', '/payment/create', [new PaymentController(), 'create']);
 $router->add('GET', '/payment/callback', [new PaymentController(), 'callback']);
+$router->add('GET', '/payment/ipn', [new PaymentController(), 'ipn']);
+$router->add('POST', '/payment/ipn', [new PaymentController(), 'ipn']);
+$router->add('GET', '/api/pesapal_ipn.php', [new PaymentController(), 'ipn']);
+$router->add('POST', '/api/pesapal_ipn.php', [new PaymentController(), 'ipn']);
 $router->add('GET', '/payment/complete', [new PaymentController(), 'complete']);
 $router->add('GET', '/payments/error', function () {
     $message = $_GET['message'] ?? null;

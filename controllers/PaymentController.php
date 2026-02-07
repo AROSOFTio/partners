@@ -28,7 +28,7 @@ class PaymentController
         try {
             $paymentRequest = createPesapalPaymentRequest($order);
             Order::updatePesapalReferences((int)$order['id'], $paymentRequest['merchant_reference'], $paymentRequest['tracking_id']);
-            $iframeUrl = $paymentRequest['iframe_url'];
+            $iframeUrl = $paymentRequest['redirect_url'] ?? $paymentRequest['iframe_url'] ?? '';
 
             if (config_value('pesapal.demo', false)) {
                 // In demo mode, simulate an instant callback
@@ -46,7 +46,7 @@ class PaymentController
         $trackingId = $_REQUEST['pesapal_transaction_tracking_id'] ?? ($_REQUEST['OrderTrackingId'] ?? ($_REQUEST['orderTrackingId'] ?? ''));
         $reference = $_REQUEST['reference'] ?? ($_REQUEST['pesapal_merchant_reference'] ?? ($_REQUEST['OrderMerchantReference'] ?? ($_REQUEST['orderMerchantReference'] ?? '')));
         $orderCode = $_REQUEST['order'] ?? $reference;
-        $demo = (bool)config_value('pesapal.demo', true);
+        $demo = (bool)config_value('pesapal.demo', false);
         if (!$orderCode) {
             view('payments/error', ['message' => 'Missing order reference.']);
             return;
@@ -104,16 +104,19 @@ class PaymentController
             $order['currency'] = $verification['currency'];
         }
 
-        Payment::create([
-            'order_id' => (int)$order['id'],
-            'amount' => $amount,
-            'currency' => $order['currency'],
-            'payment_type' => $paymentType,
-            'provider' => 'pesapal',
-            'status' => $paymentStatus,
-            'pesapal_transaction_tracking_id' => $trackingId,
-            'pesapal_payment_method' => $paymentMethod,
-        ]);
+        $existingPayment = $trackingId ? Payment::findByTrackingId($trackingId) : null;
+        if (!$existingPayment) {
+            Payment::create([
+                'order_id' => (int)$order['id'],
+                'amount' => $amount,
+                'currency' => $order['currency'],
+                'payment_type' => $paymentType,
+                'provider' => 'pesapal',
+                'status' => $paymentStatus,
+                'pesapal_transaction_tracking_id' => $trackingId,
+                'pesapal_payment_method' => $paymentMethod,
+            ]);
+        }
 
         if ($paymentStatus === 'successful') {
             // If the amount covers full total, mark paid_full even for deposit orders
@@ -123,6 +126,82 @@ class PaymentController
         }
 
         redirect('/payment/complete?order=' . urlencode($order['order_code']) . '&status=' . $paymentStatus);
+    }
+
+    public function ipn()
+    {
+        $trackingId = $_REQUEST['OrderTrackingId'] ?? ($_REQUEST['orderTrackingId'] ?? ($_REQUEST['pesapal_transaction_tracking_id'] ?? ''));
+        $reference = $_REQUEST['OrderMerchantReference'] ?? ($_REQUEST['orderMerchantReference'] ?? ($_REQUEST['reference'] ?? ($_REQUEST['order'] ?? '')));
+        if (!$trackingId || !$reference) {
+            http_response_code(400);
+            echo json_encode(['status' => 400, 'message' => 'Missing IPN parameters']);
+            return;
+        }
+
+        $order = Order::findByCode($reference);
+        if (!$order) {
+            http_response_code(404);
+            echo json_encode(['status' => 404, 'message' => 'Order not found']);
+            return;
+        }
+
+        try {
+            $verification = verifyPesapalPayment($trackingId, $reference);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['status' => 500, 'message' => 'Verification failed']);
+            return;
+        }
+
+        $statusRaw = strtolower($verification['status'] ?? ($verification['payment_status_description'] ?? 'pending'));
+        $statusCode = strtolower((string)($verification['status_code'] ?? $verification['response_code'] ?? ''));
+        $paymentMethod = $verification['payment_method'] ?? null;
+        $paymentType = $order['payment_type'] === 'deposit' ? 'deposit' : 'full';
+        $amount = $order['amount_due_now'];
+        $successStatuses = ['completed', 'successful', 'success', 'paid', 'payment_completed', 'complete'];
+        $failureStatuses = ['failed', 'cancelled', 'canceled', 'denied', 'error'];
+
+        if (in_array($statusRaw, $successStatuses, true) || $statusCode === '00') {
+            $paymentStatus = 'successful';
+        } elseif (in_array($statusRaw, $failureStatuses, true)) {
+            $paymentStatus = 'failed';
+        } else {
+            $paymentStatus = 'pending';
+        }
+
+        if (!empty($verification['amount'])) {
+            $amount = (float)$verification['amount'];
+        }
+        if (!empty($verification['currency'])) {
+            $order['currency'] = $verification['currency'];
+        }
+
+        $existingPayment = $trackingId ? Payment::findByTrackingId($trackingId) : null;
+        if (!$existingPayment) {
+            Payment::create([
+                'order_id' => (int)$order['id'],
+                'amount' => $amount,
+                'currency' => $order['currency'],
+                'payment_type' => $paymentType,
+                'provider' => 'pesapal',
+                'status' => $paymentStatus,
+                'pesapal_transaction_tracking_id' => $trackingId,
+                'pesapal_payment_method' => $paymentMethod,
+            ]);
+        }
+
+        if ($paymentStatus === 'successful') {
+            $newStatus = ($amount + 0.0001) >= (float)$order['total_amount'] ? 'paid_full' : ($order['payment_type'] === 'deposit' ? 'deposit_paid' : 'paid_full');
+            Order::updateStatus((int)$order['id'], $newStatus);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'orderNotificationType' => $_REQUEST['OrderNotificationType'] ?? 'IPNCHANGE',
+            'orderTrackingId' => $trackingId,
+            'orderMerchantReference' => $order['order_code'],
+            'status' => 200,
+        ]);
     }
 
     public function complete()

@@ -26,4 +26,13 @@ class Payment
         $stmt->execute([$orderId]);
         return $stmt->fetchAll();
     }
+
+    public static function findByTrackingId(string $trackingId): ?array
+    {
+        $pdo = getPDO();
+        $stmt = $pdo->prepare('SELECT * FROM payments WHERE pesapal_transaction_tracking_id = ? LIMIT 1');
+        $stmt->execute([$trackingId]);
+        $payment = $stmt->fetch();
+        return $payment ?: null;
+    }
 }
