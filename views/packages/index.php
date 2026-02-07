@@ -15,7 +15,7 @@
                     <input type="checkbox" name="packages[]" value="<?= e($pkg['id']) ?>" class="mt-1 h-5 w-5 text-[#05C069] border-slate-300 rounded">
                     <div class="flex-1 space-y-2">
                         <div class="flex items-center justify-between">
-                            <h2 class="text-xl font-semibold text-[#152228]"><a href="/package/<?= e($pkg['slug']) ?>" class="hover:text-[#05C069]"><?= e($pkg['name']) ?></a></h2>
+                            <h2 class="text-xl font-semibold text-[#152228]"><a href="/package?slug=<?= e($pkg['slug']) ?>" class="hover:text-[#05C069]"><?= e($pkg['name']) ?></a></h2>
                             <span class="text-[#05C069] font-bold"><?= format_money($pkg['base_price'], $pkg['currency']) ?></span>
                         </div>
                         <p class="text-slate-600 text-sm"><?= e($pkg['short_description']) ?></p>

@@ -10,8 +10,14 @@ class PackageController
         view('packages/index', ['packages' => $packages]);
     }
 
-    public function view($slug)
+    public function view($slug = null)
     {
+        $slug = $slug ?: ($_GET['slug'] ?? null);
+        if (!$slug) {
+            http_response_code(404);
+            echo 'Package not found';
+            return;
+        }
         $package = Package::findBySlug($slug);
         if (!$package) {
             http_response_code(404);

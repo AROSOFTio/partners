@@ -28,6 +28,7 @@ $router = new Router();
 
 $router->add('GET', '/', [new HomeController(), 'index']);
 $router->add('GET', '/packages', [new PackageController(), 'index']);
+$router->add('GET', '/package', [new PackageController(), 'view']);
 $router->add('GET', '/package/{slug}', [new PackageController(), 'view']);
 
 $router->add('GET', '/request', [new OrderController(), 'request']);
