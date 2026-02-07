@@ -2,7 +2,7 @@
 return [
     'app_name' => 'BenTech Collaborations',
     // Update this to your local vhost (Laragon default: http://partners.test)
-    'base_url' => 'http://partners.test',
+    'base_url' => 'https://partners.bentechs.com',
     'security' => [
         'session_name' => 'bentech_session',
     ],

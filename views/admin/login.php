@@ -8,6 +8,7 @@
             <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm"><?= e($error) ?></div>
         <?php endif; ?>
         <form action="/admin/login" method="post" class="space-y-3">
+            <?= csrf_field() ?>
             <div>
                 <label class="block text-sm font-semibold text-[#152228]">Email</label>
                 <input type="email" name="email" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required>

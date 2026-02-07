@@ -12,6 +12,7 @@ foreach ($selectedPackages as $pkg) {
 }
 ?>
 <form action="/request" method="post" class="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <?= csrf_field() ?>
     <div class="lg:col-span-2 space-y-6">
         <div>
             <p class="badge mb-3">Request collaboration</p>

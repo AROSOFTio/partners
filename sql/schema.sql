@@ -112,6 +112,3 @@ INSERT INTO portfolio_items (title, brand_name, youtube_url, collab_type, short_
 ('SmartHome Hub Review', 'CasaTech', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Dedicated Review', 'Full breakdown of smart home hub with real-life automations.', 1, NOW(), NOW()),
 ('Productivity App Walkthrough', 'FlowSuite', 'https://www.youtube.com/watch?v=oHg5SJYRHA0', 'Tutorial', 'Step-by-step of onboarding and core workflows.', 1, NOW(), NOW()),
 ('Audio Gear Spotlight', 'SoundForge', 'https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Feature Segment', 'Feature in a creator tools roundup.', 0, NOW(), NOW());
-
-INSERT INTO admins (name, email, password_hash, created_at, updated_at) VALUES
-('Site Admin', 'admin@example.com', '$2y$10$DWmBpp.RMUiIq9Jj4dRsAeQiUWvE3iyAQR5/YsRyD9PYfniXhfBR6', NOW(), NOW());

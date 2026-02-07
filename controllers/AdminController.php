@@ -19,6 +19,7 @@ class AdminController
 
         $error = null;
         if (is_post()) {
+            csrf_verify();
             $email = Validator::sanitize($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
             $admin = Admin::findByEmail($email);
@@ -73,6 +74,7 @@ class AdminController
         $error = null;
 
         if (is_post()) {
+            csrf_verify();
             $data = [
                 'category_id' => (int)($_POST['category_id'] ?? 1),
                 'name' => Validator::sanitize($_POST['name'] ?? ''),
@@ -144,6 +146,12 @@ class AdminController
         $error = null;
 
         if (is_post()) {
+            csrf_verify();
+            if (!empty($_POST['delete_id'])) {
+                $deleteId = (int)$_POST['delete_id'];
+                PortfolioItem::delete($deleteId);
+                redirect('/admin/portfolio');
+            }
             $id = isset($_POST['id']) ? (int)$_POST['id'] : null;
             $data = [
                 'title' => Validator::sanitize($_POST['title'] ?? ''),
@@ -164,12 +172,6 @@ class AdminController
                 }
                 redirect('/admin/portfolio');
             }
-        }
-
-        if (isset($_GET['delete'])) {
-            $deleteId = (int)$_GET['delete'];
-            PortfolioItem::delete($deleteId);
-            redirect('/admin/portfolio');
         }
 
         view('admin/portfolio', ['items' => $items, 'error' => $error]);

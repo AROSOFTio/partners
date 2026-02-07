@@ -16,9 +16,13 @@ class OrderController
             $selectedIds = [$selectedIds];
         }
         $selectedIds = array_filter(array_map('intval', $selectedIds));
+        $isPost = is_post();
+        if ($isPost) {
+            csrf_verify();
+        }
 
         // Handle custom package creation
-        if (is_post()) {
+        if ($isPost) {
             $customName = Validator::sanitize($_POST['custom_name'] ?? '');
             $customPrice = (float)($_POST['custom_price'] ?? 0);
             $customDescription = Validator::sanitize($_POST['custom_description'] ?? '');
@@ -53,7 +57,7 @@ class OrderController
         $selectedPackages = Package::findByIds($selectedIds, true);
         $errors = [];
 
-        if (is_post()) {
+        if ($isPost) {
             $data = [
                 'customer_name' => Validator::sanitize($_POST['customer_name'] ?? ''),
                 'customer_email' => Validator::sanitize($_POST['customer_email'] ?? ''),

@@ -26,21 +26,6 @@ spl_autoload_register(function ($class) {
 
 $router = new Router();
 
-// Ensure a default admin exists
-if (class_exists('Admin')) {
-    try {
-        if (Admin::count() === 0) {
-            Admin::create([
-                'name' => 'Site Admin',
-                'email' => 'admin@example.com',
-                'password_hash' => password_hash('Admin123!', PASSWORD_BCRYPT),
-            ]);
-        }
-    } catch (Exception $e) {
-        // ignore seeding errors to avoid blocking the app
-    }
-}
-
 $router->add('GET', '/', [new HomeController(), 'index']);
 $router->add('GET', '/packages', [new PackageController(), 'index']);
 $router->add('GET', '/package/{slug}', [new PackageController(), 'view']);

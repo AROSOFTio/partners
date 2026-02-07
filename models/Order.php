@@ -6,8 +6,12 @@ class Order
 {
     public static function generateOrderCode(): string
     {
-        $seed = microtime(true) * 10000;
-        return 'COLL' . date('Y') . '-' . str_pad((string)($seed % 10000), 4, '0', STR_PAD_LEFT);
+        try {
+            $random = bin2hex(random_bytes(6));
+        } catch (Exception $e) {
+            $random = substr(md5(uniqid('', true)), 0, 12);
+        }
+        return 'COLL' . date('Ymd') . '-' . strtoupper($random);
     }
 
     public static function create(array $data, array $items): ?array

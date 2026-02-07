@@ -9,6 +9,9 @@ class PaymentController
 {
     public function create()
     {
+        if (is_post()) {
+            csrf_verify();
+        }
         $orderCode = $_POST['order_code'] ?? ($_GET['order'] ?? null);
         if (!$orderCode) {
             redirect('/packages');
@@ -43,8 +46,13 @@ class PaymentController
         $trackingId = $_REQUEST['pesapal_transaction_tracking_id'] ?? ($_REQUEST['OrderTrackingId'] ?? ($_REQUEST['orderTrackingId'] ?? ''));
         $reference = $_REQUEST['reference'] ?? ($_REQUEST['pesapal_merchant_reference'] ?? ($_REQUEST['OrderMerchantReference'] ?? ($_REQUEST['orderMerchantReference'] ?? '')));
         $orderCode = $_REQUEST['order'] ?? $reference;
+        $demo = (bool)config_value('pesapal.demo', true);
         if (!$orderCode) {
             view('payments/error', ['message' => 'Missing order reference.']);
+            return;
+        }
+        if (!$demo && !$trackingId) {
+            view('payments/error', ['message' => 'Missing payment tracking ID.']);
             return;
         }
 
@@ -53,16 +61,25 @@ class PaymentController
             view('payments/error', ['message' => 'Order not found.']);
             return;
         }
+        if (!$demo) {
+            if (empty($order['pesapal_transaction_tracking_id'])) {
+                view('payments/error', ['message' => 'Payment tracking not initialized.']);
+                return;
+            }
+            if (!hash_equals((string)$order['pesapal_transaction_tracking_id'], (string)$trackingId)) {
+                view('payments/error', ['message' => 'Payment tracking mismatch.']);
+                return;
+            }
+        }
 
         try {
             $verification = verifyPesapalPayment($trackingId, $orderCode);
         } catch (Exception $e) {
-            // If verification fails, fall back to whatever status the callback provided.
-            $verification = ['status' => $_REQUEST['status'] ?? 'pending'];
+            $verification = ['status' => 'pending'];
         }
 
         // Normalize status codes returned by Pesapal or callback
-        $statusRaw = strtolower($verification['status'] ?? ($verification['payment_status_description'] ?? ($_REQUEST['status'] ?? 'pending')));
+        $statusRaw = strtolower($verification['status'] ?? ($verification['payment_status_description'] ?? 'pending'));
         $statusCode = strtolower((string)($verification['status_code'] ?? $verification['response_code'] ?? ''));
         $paymentMethod = $verification['payment_method'] ?? null;
 

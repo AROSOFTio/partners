@@ -29,6 +29,7 @@
             <?php endif; ?>
 
             <form action="/admin/packages/edit<?= $isEditing ? '?id=' . e($package['id']) : '' ?>" method="post" class="bg-white border border-slate-200 rounded-xl card-shadow p-6 space-y-4">
+                <?= csrf_field() ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-[#152228]">Name</label>

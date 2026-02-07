@@ -28,6 +28,44 @@ function is_post(): bool
     return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
 }
 
+function csrf_token(): string
+{
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    if (empty($_SESSION['_csrf_token'])) {
+        try {
+            $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
+        } catch (Exception $e) {
+            $_SESSION['_csrf_token'] = bin2hex(uniqid('', true));
+        }
+    }
+    return $_SESSION['_csrf_token'];
+}
+
+function csrf_field(): string
+{
+    $token = htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8');
+    return '<input type="hidden" name="_csrf" value="' . $token . '">';
+}
+
+function csrf_verify(): void
+{
+    if (!is_post()) {
+        return;
+    }
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    $token = $_POST['_csrf'] ?? '';
+    $sessionToken = $_SESSION['_csrf_token'] ?? '';
+    if (!$token || !$sessionToken || !hash_equals($sessionToken, $token)) {
+        http_response_code(419);
+        echo 'Invalid CSRF token';
+        exit;
+    }
+}
+
 function e($value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
