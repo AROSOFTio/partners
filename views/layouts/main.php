@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e(config_value('app_name', 'BenTech Collaborations')) ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body class="app-body">
+<body class="page">
     <header class="site-header">
         <div class="container header-inner">
-            <div class="brand">
-                <div class="brand-title">BenTech Collaborations</div>
-                <div class="brand-sub">Powered by AROSOFT Innovations Ltd</div>
-            </div>
+            <a href="/" class="brand">
+                <span class="brand-title">BenTech Collaborations</span>
+                <span class="brand-sub">Powered by AROSOFT Innovations Ltd</span>
+            </a>
             <div class="header-actions">
                 <nav class="nav">
                     <a href="/" class="nav-link">Home</a>
@@ -38,13 +38,13 @@
         </div>
     </header>
 
-    <main class="min-h-screen">
+    <main class="main">
         <?= $content ?? '' ?>
     </main>
 
     <footer class="site-footer">
         <div class="container footer-inner">
-            <div>(c) <?= date('Y') ?> BenTech. Powered & billed by AROSOFT Innovations Ltd.</div>
+            <div>© <?= date('Y') ?> BenTech. Powered & billed by AROSOFT Innovations Ltd.</div>
             <div class="footer-note">Payments are securely processed via Pesapal.</div>
         </div>
     </footer>
