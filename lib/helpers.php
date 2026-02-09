@@ -71,6 +71,12 @@ function e($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+function safe_html($value): string
+{
+    $allowed = '<b><strong><i><em><u><br><p><ul><ol><li>';
+    return strip_tags((string)$value, $allowed);
+}
+
 function view(string $view, array $data = [], string $layout = 'layouts/main')
 {
     $viewFile = __DIR__ . '/../views/' . $view . '.php';

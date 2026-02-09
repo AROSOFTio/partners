@@ -67,7 +67,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                                                 <span class="badge">Popular &#128293;</span>
                                             <?php endif; ?>
                                         </div>
-                                        <p class="text-slate-600 text-sm"><?= e($pkg['short_description']) ?></p>
+                                        <p class="text-slate-600 text-sm"><?= safe_html($pkg['short_description']) ?></p>
                                     </div>
                                     <span class="text-[#05C069] font-bold"><?= format_money($pkg['base_price'], $pkg['currency']) ?></span>
                                 </div>
@@ -114,7 +114,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                                                 <span class="badge">Popular &#128293;</span>
                                             <?php endif; ?>
                                         </div>
-                                        <p class="text-slate-600 text-sm"><?= e($pkg['short_description']) ?></p>
+                                        <p class="text-slate-600 text-sm"><?= safe_html($pkg['short_description']) ?></p>
                                     </div>
                                     <span class="text-[#05C069] font-bold"><?= format_money($pkg['base_price'], $pkg['currency']) ?></span>
                                 </div>

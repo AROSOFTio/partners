@@ -11,7 +11,7 @@ $whatsappUrl = !empty($whatsappNumber)
         <div class="flex items-start justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-[#152228]"><?= e($package['name']) ?></h1>
-                <p class="text-slate-600 mt-2"><?= e($package['full_description']) ?></p>
+                <p class="text-slate-600 mt-2"><?= safe_html($package['full_description']) ?></p>
             </div>
             <div class="text-right">
                 <div class="text-sm text-slate-500">Starting at</div>

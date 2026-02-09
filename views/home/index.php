@@ -48,7 +48,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                         <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-4 last:border-none last:pb-0">
                             <div>
                                 <h4 class="font-semibold text-slate-900"><?= e($pkg['name']) ?></h4>
-                                <p class="text-sm text-slate-500"><?= e($pkg['short_description']) ?></p>
+                                <p class="text-sm text-slate-500"><?= safe_html($pkg['short_description']) ?></p>
                                 <p class="text-xs text-slate-400 mt-1"><?= (int)$pkg['request_count'] ?> requests</p>
                             </div>
                             <div class="text-sm font-semibold text-[#ff0033]">
@@ -101,7 +101,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                                         <span class="badge">Popular &#128293;</span>
                                     <?php endif; ?>
                                 </div>
-                                <p class="mt-2 text-sm text-slate-500"><?= e($pkg['short_description']) ?></p>
+                                <p class="mt-2 text-sm text-slate-500"><?= safe_html($pkg['short_description']) ?></p>
                                 <p class="mt-3 text-xs text-slate-400">Delivery: <?= e($pkg['delivery_time_text']) ?></p>
                                 <p class="mt-1 text-xs text-slate-400">Requested <?= (int)$pkg['request_count'] ?> times</p>
                             </div>
@@ -138,7 +138,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                                         <span class="badge">Popular &#128293;</span>
                                     <?php endif; ?>
                                 </div>
-                                <p class="mt-2 text-sm text-slate-500"><?= e($pkg['short_description']) ?></p>
+                                <p class="mt-2 text-sm text-slate-500"><?= safe_html($pkg['short_description']) ?></p>
                                 <p class="mt-3 text-xs text-slate-400">Delivery: <?= e($pkg['delivery_time_text']) ?></p>
                                 <p class="mt-1 text-xs text-slate-400">Requested <?= (int)$pkg['request_count'] ?> times</p>
                             </div>
@@ -175,7 +175,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                 <div class="mt-4">
                     <p class="text-xs uppercase tracking-[0.2em] text-slate-400"><?= e($item['brand_name']) ?></p>
                     <h3 class="font-display mt-2 text-lg text-slate-900"><?= e($item['title']) ?></h3>
-                    <p class="mt-2 text-sm text-slate-500"><?= e($item['short_description']) ?></p>
+                    <p class="mt-2 text-sm text-slate-500"><?= safe_html($item['short_description']) ?></p>
                 </div>
             </div>
         <?php endforeach; ?>

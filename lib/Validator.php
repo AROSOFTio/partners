@@ -3,7 +3,8 @@ class Validator
 {
     public static function sanitize($value): string
     {
-        return trim(strip_tags((string)$value));
+        $allowed = '<b><strong><i><em><u><br><p><ul><ol><li>';
+        return trim(strip_tags((string)$value, $allowed));
     }
 
     public static function email($value): bool
