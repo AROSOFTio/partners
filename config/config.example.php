@@ -24,6 +24,10 @@ return [
             'EUR' => 0.00024,
         ],
     ],
+    'contact' => [
+        // Include country code, numbers only (example: 2567XXXXXXXX)
+        'whatsapp_number' => '',
+    ],
     'mail' => [
         'from_email' => 'no-reply@example.com',
         'from_name' => 'BenTech Collaborations',

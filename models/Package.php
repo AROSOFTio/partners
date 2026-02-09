@@ -3,11 +3,47 @@ require_once __DIR__ . '/../config/database.php';
 
 class Package
 {
-    public static function allActive(): array
+    private static function activeWithMeta(string $orderClause = 'ORDER BY p.name', ?int $limit = null): array
     {
         $pdo = getPDO();
-        $stmt = $pdo->query('SELECT * FROM packages WHERE is_active = 1 ORDER BY name');
+        $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
+                       COALESCE(req.request_count, 0) AS request_count
+                FROM packages p
+                JOIN categories c ON c.id = p.category_id AND c.is_active = 1
+                LEFT JOIN (
+                    SELECT oi.package_id, SUM(oi.quantity) AS request_count
+                    FROM order_items oi
+                    JOIN orders o ON o.id = oi.order_id AND o.status <> 'cancelled'
+                    GROUP BY oi.package_id
+                ) req ON req.package_id = p.id
+                WHERE p.is_active = 1
+                $orderClause";
+
+        if ($limit !== null) {
+            $sql .= ' LIMIT :limit';
+        }
+
+        $stmt = $pdo->prepare($sql);
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        }
+        $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public static function allActive(): array
+    {
+        return self::activeWithMeta('ORDER BY p.name');
+    }
+
+    public static function allActiveWithMeta(): array
+    {
+        return self::activeWithMeta('ORDER BY p.name');
+    }
+
+    public static function popular(int $limit = 3): array
+    {
+        return self::activeWithMeta('ORDER BY request_count DESC, p.name ASC', $limit);
     }
 
     public static function all(): array
@@ -45,11 +81,44 @@ class Package
         $pdo = getPDO();
         $sql = "SELECT * FROM packages WHERE id IN ($placeholders)";
         if (!$includeInactive) {
-            $sql .= " AND is_active = 1";
+            $sql .= ' AND is_active = 1';
         }
         $stmt = $pdo->prepare($sql);
         $stmt->execute($ids);
         return $stmt->fetchAll();
+    }
+
+    public static function splitByType(array $packages): array
+    {
+        $video = [];
+        $combo = [];
+        $other = [];
+
+        foreach ($packages as $pkg) {
+            $slug = strtolower($pkg['category_slug'] ?? '');
+            $name = strtolower($pkg['category_name'] ?? '');
+            $isCombo = (strpos($slug, 'combo') !== false) || (strpos($name, 'combo') !== false) || (strpos($slug, 'bundle') !== false);
+            $isVideo = (strpos($slug, 'video') !== false) || (strpos($name, 'video') !== false);
+
+            if ($isCombo) {
+                $combo[] = $pkg;
+                continue;
+            }
+
+            if ($isVideo) {
+                $video[] = $pkg;
+                continue;
+            }
+
+            $video[] = $pkg;
+            $other[] = $pkg;
+        }
+
+        return [
+            'video' => $video,
+            'combo' => $combo,
+            'other' => $other,
+        ];
     }
 
     public static function create(array $data): int

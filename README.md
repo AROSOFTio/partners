@@ -9,6 +9,7 @@ A lightweight PHP 8.2 MVC-style app for YouTube collaboration and partnership re
 4. Copy `config/config.example.php` to `config/config.php` and update:
    - Database credentials
    - `base_url` (e.g., https://partners.bentechs.com)
+   - `contact.whatsapp_number` for package chat links
    - Pesapal keys and callback URL
    - Mail/SMTP settings
 5. Ensure `config/` is not publicly accessible and has restrictive permissions.
@@ -20,3 +21,4 @@ A lightweight PHP 8.2 MVC-style app for YouTube collaboration and partnership re
 - Payments integrate with Pesapal via helper `config/pesapal.php`; swap the mock URL with the live iFrame endpoint when keys are configured.
 - Tailwind CDN + Poppins font for UI; brand colors: #05C069 and #152228.
 - Currency toggle in header (UGX base, USD default display, EUR option). Update static rates in `config/config.php`.
+- Home/packages "Popular" tags are ranked by package request counts from `order_items` (cancelled orders excluded).

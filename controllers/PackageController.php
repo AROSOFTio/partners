@@ -6,8 +6,17 @@ class PackageController
 {
     public function index()
     {
-        $packages = Package::allActive();
-        view('packages/index', ['packages' => $packages]);
+        $packages = Package::allActiveWithMeta();
+        $packageGroups = Package::splitByType($packages);
+        $popularPackages = Package::popular(4);
+        $whatsappNumber = preg_replace('/\D+/', '', (string)config_value('contact.whatsapp_number', ''));
+
+        view('packages/index', [
+            'packages' => $packages,
+            'packageGroups' => $packageGroups,
+            'popularPackages' => $popularPackages,
+            'whatsappNumber' => $whatsappNumber,
+        ]);
     }
 
     public function view($slug = null)

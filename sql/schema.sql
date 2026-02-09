@@ -99,14 +99,17 @@ CREATE TABLE IF NOT EXISTS admins (
 
 -- Seed data
 INSERT INTO categories (name, slug, description, is_active, created_at, updated_at) VALUES
-('YouTube Video', 'youtube-video', 'Video collaborations on BenTech YouTube channel.', 1, NOW(), NOW());
+('YouTube Video', 'youtube-video', 'Video collaborations on BenTech YouTube channel.', 1, NOW(), NOW()),
+('Combo Packages', 'combo-packages', 'Bundled collaboration offers that combine deliverables.', 1, NOW(), NOW());
 
 INSERT INTO packages (category_id, name, slug, short_description, full_description, base_price, currency, duration_minutes, allow_deposit, deposit_percentage, delivery_time_text, is_active, created_at, updated_at) VALUES
 (1, 'Dedicated Review Video (4-8 mins)', 'dedicated-review-video', 'Full video reviewing the product/service with honest insights.', 'A deep-dive review on the BenTech channel covering setup, experience, pros/cons, and recommendations.', 250000.00, 'UGX', 8, 1, 50.00, '7-10 business days after brief and payment', 1, NOW(), NOW()),
 (1, 'Feature Segment (2-4 mins)', 'feature-segment', 'Feature block inside a relevant video with CTA.', 'We integrate your brand as a segment inside an upcoming video, including CTA and link.', 150000.00, 'UGX', 4, 1, 50.00, '5-7 business days', 1, NOW(), NOW()),
 (1, 'Quick Mention / Shoutout (30-60s)', 'quick-mention-shoutout', 'Short shoutout with link and lower-third mention.', 'Concise mention for brand awareness, including a link and overlay.', 80000.00, 'UGX', 1, 0, 0.00, '3-5 business days', 1, NOW(), NOW()),
 (1, 'Step-by-Step Tutorial / Walkthrough', 'step-by-step-tutorial', 'Guided tutorial showcasing your product in action.', 'Recorded walkthrough showing setup, core workflows, and best practices for your product.', 180000.00, 'UGX', 12, 1, 50.00, '7-10 business days', 1, NOW(), NOW()),
-(1, 'Explainer Video (screen recording + voiceover)', 'explainer-video', 'Clean explainer with screen captures and narration.', 'Scripted explainer crafted with screen recordings, captions, and voiceover.', 200000.00, 'UGX', 10, 1, 50.00, '7-10 business days', 1, NOW(), NOW());
+(1, 'Explainer Video (screen recording + voiceover)', 'explainer-video', 'Clean explainer with screen captures and narration.', 'Scripted explainer crafted with screen recordings, captions, and voiceover.', 200000.00, 'UGX', 10, 1, 50.00, '7-10 business days', 1, NOW(), NOW()),
+(2, 'Starter Combo (Review + Mention)', 'starter-combo-review-mention', 'A review video plus a quick shoutout for extra awareness.', 'This combo includes one detailed review and one short mention in a second video to boost repeat visibility.', 300000.00, 'UGX', 10, 1, 50.00, '7-12 business days', 1, NOW(), NOW()),
+(2, 'Launch Combo (Tutorial + Explainer)', 'launch-combo-tutorial-explainer', 'Pair a hands-on tutorial with a focused explainer.', 'Ideal for product launches where you need both a practical walkthrough and a concise explainer asset.', 360000.00, 'UGX', 14, 1, 50.00, '8-14 business days', 1, NOW(), NOW());
 
 INSERT INTO portfolio_items (title, brand_name, youtube_url, collab_type, short_description, is_featured, created_at, updated_at) VALUES
 ('SmartHome Hub Review', 'CasaTech', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Dedicated Review', 'Full breakdown of smart home hub with real-life automations.', 1, NOW(), NOW()),
