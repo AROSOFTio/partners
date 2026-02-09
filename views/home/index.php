@@ -94,7 +94,9 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <h3 class="font-display text-lg text-slate-900"><?= e($pkg['name']) ?></h3>
+                                    <h3 class="font-display text-lg text-slate-900">
+                                        <a href="/package?slug=<?= e($pkg['slug']) ?>" class="hover:text-[#ff0033]"><?= e($pkg['name']) ?></a>
+                                    </h3>
                                     <?php if (!empty($popularById[(int)$pkg['id']])): ?>
                                         <span class="badge">Popular &#128293;</span>
                                     <?php endif; ?>
@@ -108,6 +110,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                         <div class="mt-4 flex flex-wrap items-center gap-3">
                             <a href="/request/?packages%5B%5D=<?= e($pkg['id']) ?>" class="text-sm font-semibold text-slate-900">Request -></a>
                             <a href="<?= e($buildWhatsAppLink($pkg)) ?>" target="_blank" rel="noopener" class="text-sm font-semibold text-[#128c7e]">Chat on WhatsApp</a>
+                            <a href="/package?slug=<?= e($pkg['slug']) ?>" class="text-sm font-semibold text-slate-700">View details</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -128,7 +131,9 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <h3 class="font-display text-lg text-slate-900"><?= e($pkg['name']) ?></h3>
+                                    <h3 class="font-display text-lg text-slate-900">
+                                        <a href="/package?slug=<?= e($pkg['slug']) ?>" class="hover:text-[#ff0033]"><?= e($pkg['name']) ?></a>
+                                    </h3>
                                     <?php if (!empty($popularById[(int)$pkg['id']])): ?>
                                         <span class="badge">Popular &#128293;</span>
                                     <?php endif; ?>
@@ -142,6 +147,7 @@ $buildWhatsAppLink = static function (array $package) use ($whatsappNumber): str
                         <div class="mt-4 flex flex-wrap items-center gap-3">
                             <a href="/request/?packages%5B%5D=<?= e($pkg['id']) ?>" class="text-sm font-semibold text-slate-900">Request -></a>
                             <a href="<?= e($buildWhatsAppLink($pkg)) ?>" target="_blank" rel="noopener" class="text-sm font-semibold text-[#128c7e]">Chat on WhatsApp</a>
+                            <a href="/package?slug=<?= e($pkg['slug']) ?>" class="text-sm font-semibold text-slate-700">View details</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
