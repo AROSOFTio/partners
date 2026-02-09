@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 
 class Package
 {
-    private static function activeWithMeta(string $orderClause = 'ORDER BY p.name', ?int $limit = null): array
+    private static function activeWithMeta(string $orderClause = 'ORDER BY p.base_price ASC, p.name ASC', ?int $limit = null): array
     {
         $pdo = getPDO();
         $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
@@ -33,12 +33,12 @@ class Package
 
     public static function allActive(): array
     {
-        return self::activeWithMeta('ORDER BY p.name');
+        return self::activeWithMeta('ORDER BY p.base_price ASC, p.name ASC');
     }
 
     public static function allActiveWithMeta(): array
     {
-        return self::activeWithMeta('ORDER BY p.name');
+        return self::activeWithMeta('ORDER BY p.base_price ASC, p.name ASC');
     }
 
     public static function popular(int $limit = 3): array
@@ -113,6 +113,19 @@ class Package
             $video[] = $pkg;
             $other[] = $pkg;
         }
+
+        $sortFn = static function ($a, $b) {
+            $pa = (float)($a['base_price'] ?? 0);
+            $pb = (float)($b['base_price'] ?? 0);
+            if ($pa === $pb) {
+                return strcmp((string)$a['name'], (string)$b['name']);
+            }
+            return ($pa < $pb) ? -1 : 1;
+        };
+
+        usort($video, $sortFn);
+        usort($combo, $sortFn);
+        usort($other, $sortFn);
 
         return [
             'video' => $video,

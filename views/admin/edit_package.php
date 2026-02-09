@@ -42,8 +42,15 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-[#152228]">Short description</label>
-                        <input type="text" name="short_description" class="mt-1 w-full border border-slate-300 rounded-lg p-3" value="<?= e($package['short_description'] ?? '') ?>" required>
+                        <div class="flex items-center justify-between">
+                            <label class="block text-sm font-semibold text-[#152228]">Short description</label>
+                            <div class="flex gap-2 text-xs">
+                                <button type="button" data-target="short_description" class="fmt-btn font-semibold text-slate-600">B</button>
+                                <button type="button" data-target="short_description" data-tag="i" class="fmt-btn text-slate-600 italic">I</button>
+                                <button type="button" data-target="short_description" data-tag="u" class="fmt-btn text-slate-600 underline">U</button>
+                            </div>
+                        </div>
+                        <textarea id="short_description" name="short_description" rows="2" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required><?= e($package['short_description'] ?? '') ?></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-[#152228]">Category</label>
@@ -55,8 +62,18 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-[#152228]">Full description</label>
-                    <textarea name="full_description" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required><?= e($package['full_description'] ?? '') ?></textarea>
+                    <div class="flex items-center justify-between">
+                        <label class="block text-sm font-semibold text-[#152228]">Full description</label>
+                        <div class="flex gap-2 text-xs">
+                            <button type="button" data-target="full_description" class="fmt-btn font-semibold text-slate-600">B</button>
+                            <button type="button" data-target="full_description" data-tag="i" class="fmt-btn text-slate-600 italic">I</button>
+                            <button type="button" data-target="full_description" data-tag="u" class="fmt-btn text-slate-600 underline">U</button>
+                            <button type="button" data-target="full_description" data-tag="ul" class="fmt-btn text-slate-600">• List</button>
+                            <button type="button" data-target="full_description" data-tag="ol" class="fmt-btn text-slate-600">1. List</button>
+                            <button type="button" data-target="full_description" data-tag="br" class="fmt-btn text-slate-600">Line</button>
+                        </div>
+                    </div>
+                    <textarea id="full_description" name="full_description" rows="6" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required><?= e($package['full_description'] ?? '') ?></textarea>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -97,3 +114,49 @@
         </div>
     </div>
 </div>
+<script>
+    (function() {
+        function wrapSelection(textarea, before, after) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const val = textarea.value;
+            const selected = val.slice(start, end);
+            const next = val.slice(0, start) + before + selected + after + val.slice(end);
+            textarea.value = next;
+            const cursor = start + before.length + selected.length + after.length;
+            textarea.focus();
+            textarea.setSelectionRange(cursor, cursor);
+        }
+        function applyList(textarea, type) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const val = textarea.value;
+            const selected = val.slice(start, end) || 'Item';
+            const items = selected.split(/\r?\n/).filter(Boolean);
+            const li = items.map(i => '<li>' + i + '</li>').join('');
+            const block = '<' + type + '>' + li + '</' + type + '>';
+            const next = val.slice(0, start) + block + val.slice(end);
+            textarea.value = next;
+            const cursor = start + block.length;
+            textarea.focus();
+            textarea.setSelectionRange(cursor, cursor);
+        }
+        document.querySelectorAll('.fmt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const tag = btn.getAttribute('data-tag') || 'b';
+                const textarea = document.getElementById(targetId);
+                if (!textarea) return;
+                if (tag === 'ul' || tag === 'ol') {
+                    applyList(textarea, tag);
+                    return;
+                }
+                if (tag === 'br') {
+                    wrapSelection(textarea, '<br>', '');
+                    return;
+                }
+                wrapSelection(textarea, '<' + tag + '>', '</' + tag + '>');
+            });
+        });
+    })();
+</script>

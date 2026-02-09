@@ -51,8 +51,18 @@ foreach ($selectedPackages as $pkg) {
             </div>
         </div>
         <div>
-            <label class="block text-sm font-semibold text-[#152228]">Short brief / campaign details *</label>
-            <textarea name="brief" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required></textarea>
+            <div class="flex items-center justify-between">
+                <label class="block text-sm font-semibold text-[#152228]">Short brief / campaign details *</label>
+                <div class="flex gap-2 text-xs">
+                    <button type="button" data-target="brief" class="fmt-btn font-semibold text-slate-600">B</button>
+                    <button type="button" data-target="brief" data-tag="i" class="fmt-btn text-slate-600 italic">I</button>
+                    <button type="button" data-target="brief" data-tag="u" class="fmt-btn text-slate-600 underline">U</button>
+                    <button type="button" data-target="brief" data-tag="ul" class="fmt-btn text-slate-600">• List</button>
+                    <button type="button" data-target="brief" data-tag="ol" class="fmt-btn text-slate-600">1. List</button>
+                    <button type="button" data-target="brief" data-tag="br" class="fmt-btn text-slate-600">Line</button>
+                </div>
+            </div>
+            <textarea id="brief" name="brief" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required></textarea>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -96,8 +106,18 @@ foreach ($selectedPackages as $pkg) {
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-[#152228]">Description</label>
-                <textarea name="custom_description" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="Describe the custom collaboration"></textarea>
+                <div class="flex items-center justify-between">
+                    <label class="block text-sm font-semibold text-[#152228]">Description</label>
+                    <div class="flex gap-2 text-xs">
+                        <button type="button" data-target="custom_description" class="fmt-btn font-semibold text-slate-600">B</button>
+                        <button type="button" data-target="custom_description" data-tag="i" class="fmt-btn text-slate-600 italic">I</button>
+                        <button type="button" data-target="custom_description" data-tag="u" class="fmt-btn text-slate-600 underline">U</button>
+                        <button type="button" data-target="custom_description" data-tag="ul" class="fmt-btn text-slate-600">• List</button>
+                        <button type="button" data-target="custom_description" data-tag="ol" class="fmt-btn text-slate-600">1. List</button>
+                        <button type="button" data-target="custom_description" data-tag="br" class="fmt-btn text-slate-600">Line</button>
+                    </div>
+                </div>
+                <textarea id="custom_description" name="custom_description" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="Describe the custom collaboration"></textarea>
             </div>
         </div>
 
@@ -120,7 +140,7 @@ foreach ($selectedPackages as $pkg) {
                             <span class="font-semibold text-[#152228]"><?= e($pkg['name']) ?></span>
                             <span class="text-[#05C069] font-semibold"><?= format_money($pkg['base_price'], $pkg['currency']) ?></span>
                         </div>
-                        <p class="text-slate-600 text-xs mt-1"><?= e($pkg['short_description']) ?></p>
+                        <p class="text-slate-600 text-xs mt-1"><?= safe_html($pkg['short_description']) ?></p>
                     </div>
                 </label>
             <?php endforeach; ?>
@@ -142,3 +162,49 @@ foreach ($selectedPackages as $pkg) {
         </div>
     </aside>
 </form>
+<script>
+    (function() {
+        function wrapSelection(textarea, before, after) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const val = textarea.value;
+            const selected = val.slice(start, end);
+            const next = val.slice(0, start) + before + selected + after + val.slice(end);
+            textarea.value = next;
+            const cursor = start + before.length + selected.length + after.length;
+            textarea.focus();
+            textarea.setSelectionRange(cursor, cursor);
+        }
+        function applyList(textarea, type) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const val = textarea.value;
+            const selected = val.slice(start, end) || 'Item';
+            const items = selected.split(/\r?\n/).filter(Boolean);
+            const li = items.map(i => '<li>' + i + '</li>').join('');
+            const block = '<' + type + '>' + li + '</' + type + '>';
+            const next = val.slice(0, start) + block + val.slice(end);
+            textarea.value = next;
+            const cursor = start + block.length;
+            textarea.focus();
+            textarea.setSelectionRange(cursor, cursor);
+        }
+        document.querySelectorAll('.fmt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const tag = btn.getAttribute('data-tag') || 'b';
+                const textarea = document.getElementById(targetId);
+                if (!textarea) return;
+                if (tag === 'ul' || tag === 'ol') {
+                    applyList(textarea, tag);
+                    return;
+                }
+                if (tag === 'br') {
+                    wrapSelection(textarea, '<br>', '');
+                    return;
+                }
+                wrapSelection(textarea, '<' + tag + '>', '</' + tag + '>');
+            });
+        });
+    })();
+</script>

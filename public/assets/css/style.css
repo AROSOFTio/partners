@@ -69,6 +69,18 @@ a:focus {
     outline-offset: 2px;
 }
 
+.fmt-btn {
+    padding: 4px 8px;
+    border: 1px solid #e6eaed;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.fmt-btn:hover {
+    background: #f4f6f7;
+}
+
 @keyframes rise {
     from {
         opacity: 0;
