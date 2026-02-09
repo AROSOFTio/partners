@@ -62,7 +62,7 @@ foreach ($selectedPackages as $pkg) {
                     <button type="button" data-target="brief" data-tag="br" class="fmt-btn text-slate-600">Line</button>
                 </div>
             </div>
-            <textarea id="brief" name="brief" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required></textarea>
+            <textarea id="brief" name="brief" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg p-3 fmt-area" required></textarea>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -117,7 +117,7 @@ foreach ($selectedPackages as $pkg) {
                         <button type="button" data-target="custom_description" data-tag="br" class="fmt-btn text-slate-600">Line</button>
                     </div>
                 </div>
-                <textarea id="custom_description" name="custom_description" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg p-3" placeholder="Describe the custom collaboration"></textarea>
+                <textarea id="custom_description" name="custom_description" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg p-3 fmt-area" placeholder="Describe the custom collaboration"></textarea>
             </div>
         </div>
 
@@ -204,6 +204,16 @@ foreach ($selectedPackages as $pkg) {
                     return;
                 }
                 wrapSelection(textarea, '<' + tag + '>', '</' + tag + '>');
+            });
+        });
+        document.querySelectorAll('.fmt-area').forEach(area => {
+            area.addEventListener('keydown', (e) => {
+                if (!e.ctrlKey) return;
+                const key = e.key.toLowerCase();
+                if (key === 'b' || key === 'i' || key === 'u') {
+                    e.preventDefault();
+                    wrapSelection(area, '<' + key + '>', '</' + key + '>');
+                }
             });
         });
     })();

@@ -50,7 +50,7 @@
                                 <button type="button" data-target="short_description" data-tag="u" class="fmt-btn text-slate-600 underline">U</button>
                             </div>
                         </div>
-                        <textarea id="short_description" name="short_description" rows="2" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required><?= e($package['short_description'] ?? '') ?></textarea>
+                        <textarea id="short_description" name="short_description" rows="2" class="mt-1 w-full border border-slate-300 rounded-lg p-3 fmt-area" required><?= e($package['short_description'] ?? '') ?></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-[#152228]">Category</label>
@@ -73,7 +73,7 @@
                             <button type="button" data-target="full_description" data-tag="br" class="fmt-btn text-slate-600">Line</button>
                         </div>
                     </div>
-                    <textarea id="full_description" name="full_description" rows="6" class="mt-1 w-full border border-slate-300 rounded-lg p-3" required><?= e($package['full_description'] ?? '') ?></textarea>
+                    <textarea id="full_description" name="full_description" rows="6" class="mt-1 w-full border border-slate-300 rounded-lg p-3 fmt-area" required><?= e($package['full_description'] ?? '') ?></textarea>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -156,6 +156,16 @@
                     return;
                 }
                 wrapSelection(textarea, '<' + tag + '>', '</' + tag + '>');
+            });
+        });
+        document.querySelectorAll('.fmt-area').forEach(area => {
+            area.addEventListener('keydown', (e) => {
+                if (!e.ctrlKey) return;
+                const key = e.key.toLowerCase();
+                if (key === 'b' || key === 'i' || key === 'u') {
+                    e.preventDefault();
+                    wrapSelection(area, '<' + key + '>', '</' + key + '>');
+                }
             });
         });
     })();
